@@ -1,0 +1,74 @@
+[2019-12-30 11:13:58] TcpServer start ...
+[2019-12-30 11:34:34] a new connection established!
+[2019-12-30 11:34:34] session info:[
+                        type: remote client
+                        id: yangpan
+                        state: Login
+                        sid: 1
+                        timeout: 360 s
+                        ]
+
+[2019-12-30 11:34:34] note:processMessage login ret=0
+[2019-12-30 11:35:15] note: no find peer the bev
+[2019-12-30 11:35:15] note:conn_eventcb remote client:Read Timeout... 1577676915
+[2019-12-30 11:35:56] note: no find peer the bev
+[2019-12-30 11:35:56] note:conn_eventcb remote client:Read Timeout... 1577676956
+[2019-12-30 11:36:36] note: no find peer the bev
+[2019-12-30 11:36:36] note:conn_eventcb remote client:Read Timeout... 1577676996
+[2019-12-30 11:37:16] note: no find peer the bev
+[2019-12-30 11:37:16] note:conn_eventcb remote client:Read Timeout... 1577677036
+[2019-12-30 11:37:56] note: no find peer the bev
+[2019-12-30 11:37:56] note:conn_eventcb remote client:Read Timeout... 1577677076
+[2019-12-30 11:38:36] note: no find peer the bev
+[2019-12-30 11:38:36] note:conn_eventcb remote client:Read Timeout... 1577677116
+[2019-12-30 11:39:03] a new connection established!
+[2019-12-30 11:39:03] session info:[
+                        type: cpe device
+                        id: yangpan
+                        state: Login
+                        sid: 2
+                        timeout: 360 s
+                        ]
+
+[2019-12-30 11:39:03] note:processMessage login ret=0
+[2019-12-30 11:39:03] processMessage: match successful
+[2019-12-30 11:39:03] session info:[
+                        type: cpe device
+                        id: yangpan
+                        state: bind
+                        sid: 2
+                        timeout: 1800 s
+                        ]
+
+[2019-12-30 11:39:03] session info:[
+                        type: remote client
+                        id: yangpan
+                        state: bind
+                        sid: 1
+                        timeout: 1800 s
+                        ]
+
+[2019-12-30 11:39:03] note:processMessage match succ and send ok 0 ret=0
+[2019-12-30 11:39:03] note:processMessage match succ and send ok 1 ret=0
+[2019-12-30 11:39:16] note:conn_eventcb remote client:Read Timeout... 1577677156
+[2019-12-30 11:39:23] note:conn_eventcb cpe device Connection close.
+[2019-12-30 11:39:23] session info:[
+                        type: cpe device
+                        id: yangpan
+                        state: bind
+                        sid: 2
+                        timeout: 1800 s
+                        ]
+
+[2019-12-30 11:39:23] session info:[
+                        type: remote client
+                        id: yangpan
+                        state: bind
+                        sid: 1
+                        timeout: 1800 s
+                        ]
+
+[2019-12-30 11:39:23] note:removeSession delete cpe device session id:yangpan
+
+[2019-12-30 11:39:23] note:removeSession delete telnetc session id:yangpan
+
