@@ -53,10 +53,6 @@ static void conn_readcb(struct bufferevent *bev, void *user_data)
 	}
 
 	server->processMessage(bev);
-
-//Configure *cfg = Configure::readConfigFile(CONFIG_FILE_PATH);
-//	ConnectionManager *cmg = ConnectionManager::getInstance();
-//	cmg->recycleConnection();
 }
 
 
@@ -184,7 +180,11 @@ static void	listener_cb(struct evconnlistener *listener, evutil_socket_t fd,
 	bufferevent_enable(bev, EV_WRITE | EV_READ);
 
 	//first write
-	Configure *cfg = Configure::readConfigFile(CONFIG_FILE_PATH);
+	Configure *cfg = Configure::readConfigFile();
+	if (NULL == cfg){
+		LocalLog::userLog(LOG_LEVEL_ERR, "error:get config file failed");
+		return;
+	}
 	ret = bufferevent_write(bev, cfg->m_host.c_str(), cfg->m_host.length());
 	if (ret != 0) {
 		LocalLog::userLog(LOG_LEVEL_ERR, "error:server send data failed");
@@ -197,15 +197,19 @@ int TcpServer::listen(struct event_base* base) {
 	
 	struct sockaddr_in sin;
 
-	Configure *cfg = Configure::readConfigFile(CONFIG_FILE_PATH);
-
+	Configure *cfg = Configure::readConfigFile();
+	if (NULL == cfg)
+	{
+		LocalLog::userLog(LOG_LEVEL_ERR, "error:read config file failed!");
+		return -1;
+	}
 	this->m_base = base;
 	memset(&sin, 0, sizeof(sin));
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(cfg->m_staticPort);
 	sin.sin_addr.s_addr = INADDR_ANY;
 	
-	Configure::dump(CONFIG_FILE_PATH);
+	Configure::dump();
 	
 	listener = evconnlistener_new_bind(m_base, listener_cb, this,
 		         LEV_OPT_REUSEABLE|LEV_OPT_CLOSE_ON_FREE, -1,
@@ -214,7 +218,7 @@ int TcpServer::listen(struct event_base* base) {
 
 	if (!listener) {
 		LocalLog::userLog(LOG_LEVEL_ERR, "error:Could not create a listener!");
-		return 1;
+		return -1;
 	}
 
 	LocalLog::userLog(LOG_LEVEL_ALL, "TcpServer start ...");
@@ -236,7 +240,7 @@ int TcpServer::processMessage(struct bufferevent *bev) {
 
 	ConnectionManager *cmg = ConnectionManager::getInstance();
 	cmg->requestInc();
-	Configure *cfg = Configure::readConfigFile(CONFIG_FILE_PATH);
+	Configure *cfg = Configure::readConfigFile();
 	if (cfg != NULL) {
 		int conn = cmg->getConnections();
 		int req_per = cmg->getCurrentRequest();

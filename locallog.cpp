@@ -91,7 +91,11 @@ void LocalLog::userLog(LOG_LEVEL level,const char *fmt, ...) {
 	if (m_logfile == NULL) {
 		return;
 	}
-	Configure *cfg = Configure::readConfigFile(CONFIG_FILE_PATH);
+	Configure *cfg = Configure::readConfigFile();
+	if (NULL == cfg){
+		std::cout<<"read the config failed"<<std::endl;
+		return;
+	}
 	if (level > cfg->m_loglevel){
 		return;
 	}

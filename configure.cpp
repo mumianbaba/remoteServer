@@ -6,6 +6,9 @@ using namespace std;
 
 Configure *Configure::m_cfg = NULL;
 
+std::string Configure::m_confFilePath;
+
+
 static void repaceTab(string &str) {
 
 	for (unsigned int i=0; i<str.length(); i++) {
@@ -44,7 +47,16 @@ void Configure::readCommonConfig(Configure *cfg, string &line) {
 	m_cfg->m_info[trim(key)] = trim(value);
 }
 
-Configure *Configure::readConfigFile(const char *filePath) {
+Configure *Configure::readConfigFile() {
+	if (!m_confFilePath.empty())
+	{
+		return readConfigFile(m_confFilePath);
+	}
+	return NULL;
+}
+
+
+Configure *Configure::readConfigFile(const std::string &filePath) {
 	
 	if (m_cfg != NULL) {
 		return m_cfg;
@@ -67,6 +79,7 @@ Configure *Configure::readConfigFile(const char *filePath) {
 	}
 	initMember(m_cfg);
 
+	m_confFilePath = filePath;
 	return m_cfg;
 }
 
@@ -87,10 +100,13 @@ unsigned int Configure::ToUint(string &val) {
 }
 
 
-void Configure::dump(const char *filePath)
+void Configure::dump()
 {
-    Configure* cfg = Configure::readConfigFile(filePath);
-
+    Configure* cfg = Configure::readConfigFile();
+	if (NULL == cfg){
+		std::cout<<"read config file failed"<<std::endl;
+		return;
+	}
 
     string param = cfg->getValue("host");
     cout<<"host:"<<param<<endl;

@@ -4,6 +4,7 @@
 
 #include "session.h"
 #include "locallog.h"
+#include "configure.h"
 
 using namespace std;
 
@@ -15,7 +16,13 @@ Session::Session()
     m_sid = m_sidCount++;
     m_state = SStateRaw;
 	m_inactive = 0;
-    m_timeouts = 50;
+	Configure * cfg = Configure::readConfigFile();
+	if (NULL != cfg){
+		m_timeouts = cfg->m_loginTimeout;
+	}
+	else{
+		m_timeouts = std::stoi(SERVER_LOGIN_TIMEOUT);
+	}
 
     m_meetee[0].bev = NULL;
     m_meetee[0].userData = NULL;
@@ -201,8 +208,13 @@ int Session::login(const char* data, int len)
         cout<<"login"<<endl;
         m_inactive = 0;
         /* login successful, set timeout 360s */
-        m_timeouts = 6*60;
-
+		Configure * cfg = Configure::readConfigFile();
+		if (NULL != cfg){
+        	m_timeouts = cfg->m_matchTimeout;
+		}
+		else{
+			m_timeouts = std::stoi(SERVER_MATCH_TIMEOUT);
+		}
         /* write log session info */
         dump_info();
         return 0;
@@ -231,7 +243,13 @@ int Session::match_done(struct bufferevent * bev, UCard* card){
     }
     int ret = 0;
     m_state = SStateBind;
-    m_timeouts = 30*60;
+	Configure * cfg = Configure::readConfigFile();
+	if (NULL != cfg){
+    	m_timeouts = cfg->m_activeTimeout;
+	}
+	else{
+		m_timeouts = std::stoi(SERVER_ACTIVE_TIMEOUT);
+	}
     m_inactive = 0;
     ret = setBev(1, bev);
     if (ret != 0)
@@ -283,21 +301,6 @@ int Session::match(Session* se){
         match_done(se->getBev(0), &uCard);
         se->match_done(getBev(0), myCard);
         cout<<"bind successful"<<endl;
-#if 0
-        /* match successful */
-        setBev(1,  se->getBev(0));
-        setUserData(1, &uCard, sizeof(UCard));
-        m_state = SStateBind;
-
-        se->setBev(1, getBev(0)); 
-        se->setUserData(1, myCard, sizeof(UCard));
-        se->setSessionState(SStateBind);
-      
-        cout<<"bind successful"<<endl;
-        /* bind successful, set timeout 360s */
-        m_timeouts = 30*60;
-        m_inactive = 0;
-#endif
         return 0;
     }
     return -1;

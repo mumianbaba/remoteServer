@@ -81,6 +81,7 @@ public:
 	};
 
 public:
+	void loadConfigFile(const std::string& path);
 	void loop();
 	Session* find(struct bufferevent* bev);
 	Session* find(evutil_socket_t fd);

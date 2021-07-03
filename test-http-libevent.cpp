@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+ #include <unistd.h>
 
 #include "event2/http.h"
 #include "event2/event.h"
@@ -14,18 +15,50 @@
 
 using namespace std;
 
+static std::string s_confFilePath;
+
+
+bool readRunArg(int argc, char** argv)
+{
+	int opt = 0;
+	while((opt = getopt(argc, argv, "c:h")) != -1)
+	{
+		switch(opt) 
+		{
+			case 'h':
+			{
+				printf("Usage: remote-server -c/etc/remote/server.conf\n");
+				return false;
+			}
+			break;
+
+			case 'c':
+			{
+				s_confFilePath = std::string(optarg);
+				return true;	
+			}
+			break;
+		}
+	}
+	return false;
+}
 
 int main(int argc, char** argv)
 {
+	bool res = readRunArg(argc, argv);
+	if (false == res)
+	{
+		printf("Usage: remote-server -c /etc/remote/server.conf\n");
+		return 0;
+	}
 
     TcpContainer* tank = new TcpContainer(); 
 
+	tank->loadConfigFile(s_confFilePath);
     tank->addServer(new TcpServer(tank));
-    //tank->addServer(new TimeoutServer(tank));
-
     tank->loop();
 
-    cout<<"i am blocked"<<endl;
+    std::cout<<"i am blocked"<<endl;
     while (1);
 
     return 0;

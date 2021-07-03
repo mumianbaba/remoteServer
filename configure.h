@@ -7,16 +7,14 @@
 using namespace std;
 
 
-#define CONFIG_FILE_PATH "./config/data.cfg"
-
 #define SERVER_HOST  "192.168.99.117"
 #define SERVER_STATIC_PORT  "50000"
 /* 30s */
-#define SERVER_LOGIN_TIMEOUT  "30"  
+#define SERVER_LOGIN_TIMEOUT  "50"  
 /* 300s */
-#define SERVER_MATCH_TIMEOUT  "300"
+#define SERVER_MATCH_TIMEOUT  "360"
 /* 1200s */
-#define SERVER_ACTIVE_TIMEOUT  "1200"
+#define SERVER_ACTIVE_TIMEOUT  "1800"
 /* 100qps */
 #define SERVER_MAX_QPS         "100"
 /* 100 connections */
@@ -26,10 +24,8 @@ using namespace std;
 
 #define SERVER_LOG_LEVEL      "3"
 
-
-#define LOG_SWITCH_NAME		"log_switch" 
 #define LOG_FILE			"logfile"
-#define LOG_DEFAULT_NAME    "./event.log"
+#define LOG_DEFAULT_NAME    "./ecos_remote.log"
 
 
 class Configure
@@ -38,9 +34,10 @@ public:
 	~Configure() {
 		m_cfg = NULL;
 	};
-	static Configure *readConfigFile(const char *filePath);
+	static Configure *readConfigFile(const std::string &filePath);
+	static Configure *readConfigFile();
+	static void dump();
 	string &getValue(const char *key);
-	static void dump(const char *filePath);
 	string m_host;
 	unsigned short m_staticPort;
 	int m_loginTimeout;
@@ -72,6 +69,7 @@ private:
 	unsigned int ToUint(string &val);
 
 	map<string, string> m_info;
+	static std::string m_confFilePath;
 	
 	static Configure *m_cfg;
 };

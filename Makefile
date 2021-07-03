@@ -1,4 +1,5 @@
 
+LIBEVENT_PATH := ./libevent
 LIBEVENT_INC := $(LIBEVENT_PATH)/include
 LIBEVENT_LIBS :=  $(LIBEVENT_PATH)/lib/libevent.a
 
@@ -18,9 +19,13 @@ SOURCE +=  timeoutserver.cpp
 LINK := -lpthread
 
 all:
-	echo $(LIBEVENT_PATH)
+	@echo "lib event path: $(LIBEVENT_PATH)"
 	g++  $(SOURCE) $(LIBEVENT_LIBS) -I $(LIBEVENT_INC) $(LINK) -o remote-service
+	rm ecos-remote-v*.tar.gz -rf
+	cp remote-service ./release/
+	./script/pack_ecos_remote.sh
 
 clean:
-	rm -f *.o test-http
+	rm -f *.o remote-service
+	rm ecos-remote-v*.tar.gz -rf
 

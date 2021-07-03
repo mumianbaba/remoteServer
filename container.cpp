@@ -12,18 +12,22 @@
 
 void TcpContainer::initContainer() {
 	setEventBase(event_base_new());
+};
 
-	m_config = Configure::readConfigFile(CONFIG_FILE_PATH);
-	string logswitch = m_config->getValue(LOG_SWITCH_NAME);
-    string logfile = LOG_DEFAULT_NAME;
-	if (!logswitch.empty()) {
-		logfile = m_config->getValue(LOG_FILE);
-		if (logfile.empty()) {
-			logfile = LOG_DEFAULT_NAME;
-		}
+void TcpContainer::loadConfigFile(const std::string& path)
+{
+	m_config = Configure::readConfigFile(path);
+	if (NULL == m_config){
+    	LocalLog::userLog(LOG_LEVEL_ALL, "note:%s load Config File failed, exit");
+		exit(0);
+	}
+	std::string logfile = m_config->getValue(LOG_FILE);
+	if (logfile.empty()) {
+		logfile = LOG_DEFAULT_NAME;
 	}
     LocalLog::turnOn(logfile.c_str());
-};
+}
+
 
 void TcpContainer::loop() {
 	int ret;
